@@ -4,13 +4,14 @@
     "slug": "DeenMate",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "newArchEnabled": true
+   
     },
     "ios": {
       "supportsTablet": true

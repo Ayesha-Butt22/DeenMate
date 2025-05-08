@@ -1,11 +1,10 @@
-// navigation/AppNavigator.js
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import * as Notifications from "expo-notifications";
+import { logIbadahAutomatically } from "../utils/ibadahLogger"; // ✅ Import added
 
 // Screens
 import SplashScreen from "../screens/SplashScreen";
@@ -14,6 +13,7 @@ import AuthChoiceScreen from "../screens/AuthChoiceScreen";
 import LoginScreen from "../screens/LoginScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import BottomTabs from "./BottomTabs";
+
 import PrayerTimesScreen from "../screens/PrayerTimesScreen";
 import QiblaARCompassScreen from "../screens/QiblaARCompassScreen";
 import TasbeehCounterScreen from "../screens/TasbeehCounterScreen";
@@ -22,7 +22,7 @@ import IslamicCalendarScreen from "../screens/IslamicCalendarScreen";
 import QadhaTrackerScreen from "../screens/QadhaTrackerScreen";
 import RewardsProgressScreen from "../screens/RewardsProgressScreen";
 import HabitTrackerScreen from "../screens/HabitTrackerScreen";
-import GamifiedLearningScreen from "../screens/GamifiedLearningScreen";
+import GamifiedLearningScreen from '../screens/GamifiedLearningScreen';
 import IbadahAnalyticsScreen from "../screens/IbadahAnalyticsScreen";
 
 const Stack = createNativeStackNavigator();
@@ -33,16 +33,18 @@ export default function AppNavigator() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    // 🔔 Request notification permission
     Notifications.requestPermissionsAsync();
 
-    // 🔐 Firebase authentication
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+
+      // ✅ Log Ibadah once user is authenticated
+      if (currentUser) {
+        logIbadahAutomatically();
+      }
     });
 
-    // ⏳ Splash screen timer
     const splashTimer = setTimeout(() => {
       setShowSplash(false);
     }, 2000);
@@ -69,17 +71,10 @@ export default function AppNavigator() {
             <Stack.Screen name="Zakat" component={ZakatCalculatorScreen} />
             <Stack.Screen name="Calendar" component={IslamicCalendarScreen} />
             <Stack.Screen name="Qadha" component={QadhaTrackerScreen} />
-            <Stack.Screen name="Rewards & Progress" component={RewardsProgressScreen} />
-            <Stack.Screen name="Habit Builder" component={HabitTrackerScreen} />
-            <Stack.Screen name="Gamified Learning" component={GamifiedLearningScreen} />
-            <Stack.Screen name="Ibadah Analytics" component={IbadahAnalyticsScreen} />
-
-            {/* Add other screens here as needed */}
-            
-
-
-            
-
+            <Stack.Screen name="Rewards" component={RewardsProgressScreen} />
+            <Stack.Screen name="Habits" component={HabitTrackerScreen} />
+            <Stack.Screen name="GamifiedLearning" component={GamifiedLearningScreen} />
+            <Stack.Screen name="Analytics" component={IbadahAnalyticsScreen} />
           </>
         ) : (
           <>
